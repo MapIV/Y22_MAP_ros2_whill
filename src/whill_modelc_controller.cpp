@@ -172,7 +172,7 @@ bool set_battery_voltage_out_srv(
 
 // Set Joystick
 
-void whillSetJoyMsgCallback(const sensor_msgs::msg::Joy::SharedPtr joy)
+void whillSetJoyMsgCallback(const sensor_msgs::msg::Joy::ConstSharedPtr joy)
 {
     int joy_side  = -joy->axes[0] * 100.0f;
     int joy_front = joy->axes[1] * 100.0f;
@@ -206,7 +206,9 @@ int main(int argc, char **argv)
     auto set_battery_voltage_out = node->create_service<ros2_whill_interfaces::srv::SetBatteryVoltageOut>("/whill/set_battery_voltage_out_srv", set_battery_voltage_out_srv);
 
     // Subscribers
-    auto whill_setjoy_sub = node->create_subscription<sensor_msgs::msg::Joy>("/whill/controller/joy", whillSetJoyMsgCallback, rmw_qos_profile_sensor_data);
+    // rclcpp::QoS custom_qos(KeepLast(10), rmw_qos_profile_sensor_data);
+    // auto whill_setjoy_sub = node->create_subscription<sensor_msgs::msg::Joy>("/whill/controller/joy", whillSetJoyMsgCallback, rmw_qos_profile_sensor_data);
+    auto whill_setjoy_sub = node->create_subscription<sensor_msgs::msg::Joy>("/whill/controller/joy", rclcpp::QoS(10), whillSetJoyMsgCallback);
 
     initializeComWHILL(&whill_fd, serialport);
     rclcpp::spin(node);
