@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(ros2_whill)
 
-#add_compile_options(-std=c++11)
 if(NOT CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 14)
 endif()
@@ -32,12 +31,13 @@ include_directories(
 	${tf2_geometry_msgs_INCLUDE_DIRS}
 	${tf2_ros_INCLUDE_DIRS}
 	${ros2_whill_interfaces_INCLUDE_DIRS}
+	/opt/ros/humble/include/tf2_geometry_msgs
 )
 
 add_executable(whill_modelc_publisher
-	src/whill_modelc_publisher.cpp 
-	src/whill_modelc/uart.cpp 
-	src/whill_modelc/com_whill.cpp 
+	src/whill_modelc_publisher.cpp
+	src/whill_modelc/uart.cpp
+	src/whill_modelc/com_whill.cpp
 	src/odom.cpp
 )
 
@@ -46,9 +46,9 @@ ament_target_dependencies(whill_modelc_publisher
 	"ros2_whill_interfaces"
 )
 
-add_executable(whill_modelc_controller 
-	src/whill_modelc_controller.cpp 
-	src/whill_modelc/uart.cpp 
+add_executable(whill_modelc_controller
+	src/whill_modelc_controller.cpp
+	src/whill_modelc/uart.cpp
 	src/whill_modelc/com_whill.cpp
 )
 
@@ -68,9 +68,9 @@ target_link_libraries(whill_modelc_publisher
 	${tf2_geometry_msgs_LIBRARIES}
 	${tf2_ros_LIBRARIES}
 	${ros2_whill_interfaces_LIBRARIES}
-)
+	)
 
-target_link_libraries(whill_modelc_controller
+	target_link_libraries(whill_modelc_controller
 	${rclcpp_LIBRARIES}
 	${rmw_implementation_LIBRARIES}
 	${std_msgs_LIBRARIES}

@@ -28,6 +28,8 @@ SOFTWARE.
 
     #include "sensor_msgs/msg/joint_state.hpp"
     #include "nav_msgs/msg/odometry.hpp"
+    #include <geometry_msgs/msg/twist_stamped.hpp>
+    #include <geometry_msgs/msg/twist_with_covariance_stamped.hpp>
 
     class Odometry{
         private:

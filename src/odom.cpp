@@ -27,7 +27,7 @@ SOFTWARE.
 #include "sensor_msgs/msg/joint_state.hpp"
 #include "nav_msgs/msg/odometry.hpp"
 #include "geometry_msgs/msg/transform_stamped.hpp"
-#include "tf2_geometry_msgs/tf2_geometry_msgs.h"
+#include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 #include "tf2_ros/transform_broadcaster.h"
 
 #include "./odom.h"
@@ -113,8 +113,6 @@ nav_msgs::msg::Odometry Odometry::getROSOdometry(){
     tf2::Quaternion quat_tf;
     quat_tf.setRPY(0.0, 0.0, pose.theta);
     geometry_msgs::msg::Quaternion odom_quat = tf2::toMsg(quat_tf);
-    //geometry_msgs::msg::Quaternion odom_quat;
-    //tf2::convert(quat_tf, odom_quat);
 
     // position
     odom.pose.pose.position.x = pose.x;
