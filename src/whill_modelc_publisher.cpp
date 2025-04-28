@@ -389,6 +389,7 @@ int main(int argc, char ** argv)
           }
 
           // publish
+          whill_modelc_pub->publish(*msg);
           whill_modelc_joy->publish(*joy);
           whill_modelc_joint_state->publish(*jointState);
           whill_modelc_imu->publish(*imu);
