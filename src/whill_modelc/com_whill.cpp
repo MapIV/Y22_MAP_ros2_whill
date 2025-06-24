@@ -54,6 +54,7 @@ enum{
      //SET_SPEED_DOWN, 		// removed on Model C
      SET_SPEED_PROFILE, 	// added on Model C
      SET_BATTERY_VOLTAGE_OUT, 	// added on Model C
+     SET_VELOCITY = 8 // added on Model C
 };
 
 #define USER_CTRL_DISABLE (0)
@@ -144,7 +145,7 @@ int sendJoystick(int fd, char fb, char lr)
      cmd[2] = fb;
      cmd[3] = lr;
      return sendWHILLCmd(fd, cmd, num_cmd);
-}	  
+}
 
 int releaseJoystick(int fd)
 {
@@ -293,3 +294,17 @@ int sendSetBatteryOut(int fd, char battery_out)
      return sendWHILLCmd(fd, cmd, num_cmd);
 }
 
+// added on Model C
+int sendVelocity(int fd, char linear_h, char linear_l, char angular_h, char angular_l)
+{
+     const int num_cmd = 6;
+     char cmd[num_cmd];
+
+     cmd[0] = SET_VELOCITY;
+     cmd[1] = USER_CTRL_DISABLE;
+     cmd[2] = linear_h;
+     cmd[3] = linear_l;
+     cmd[4] = angular_h;
+     cmd[5] = angular_l;
+     return sendWHILLCmd(fd, cmd, num_cmd);
+}	

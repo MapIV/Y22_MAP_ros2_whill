@@ -32,6 +32,7 @@ Thus, it is no longer the recommended style for ROS 2.
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/joy.hpp"
+#include "geometry_msgs/msg/twist.hpp"
 
 #include "whill_modelc/com_whill.h"
 #include "ros2_whill_interfaces/srv/set_speed_profile.hpp"
@@ -186,6 +187,27 @@ void whillSetJoyMsgCallback(const sensor_msgs::msg::Joy::ConstSharedPtr joy)
     sendJoystick(whill_fd, joy_front, joy_side);
 }
 
+// Set ControlCmd
+void whillSetControlCmdMsgCallback(const geometry_msgs::msg::Twist::SharedPtr cmd_vel)
+{
+    // [m/s] to [km/h]: *3.6
+    // SetVelocityCommand takes command unit (0.004 km/h): *250
+    int linear = cmd_vel->linear.x * 900;
+
+    // wheel_tread: 0.496
+    // [rad/s] to [km/h]: *wheel_tread*3.6
+    // SetVelocityCommand takes command unit (0.004 km/h): *250
+    // The direction of rotation is reversed in ROS and SetVelocityCommand
+    int angular = cmd_vel->angular.z * -446.4;
+
+    char linear_h = (linear >> 8) & 0x000000FF;
+    char linear_l = linear & 0x000000FF;
+    char angular_h = (angular >> 8) & 0x000000FF;
+    char angular_l = angular & 0x000000FF;
+    
+    sendVelocity(whill_fd, linear_h, linear_l, angular_h, angular_l);
+}
+
 
 int main(int argc, char **argv)
 {
@@ -209,6 +231,7 @@ int main(int argc, char **argv)
     // rclcpp::QoS custom_qos(KeepLast(10), rmw_qos_profile_sensor_data);
     // auto whill_setjoy_sub = node->create_subscription<sensor_msgs::msg::Joy>("/whill/controller/joy", whillSetJoyMsgCallback, rmw_qos_profile_sensor_data);
     auto whill_setjoy_sub = node->create_subscription<sensor_msgs::msg::Joy>("/whill/controller/joy", rclcpp::QoS(10), whillSetJoyMsgCallback);
+    auto whill_cmdvel_sub = node->create_subscription<geometry_msgs::msg::Twist>("/whill/controller/cmd_vel", rclcpp::QoS(10), whillSetControlCmdMsgCallback);
 
     initializeComWHILL(&whill_fd, serialport);
     rclcpp::spin(node);
